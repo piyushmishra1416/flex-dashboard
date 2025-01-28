@@ -163,7 +163,7 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ menuItems, content, padding, on
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6"  noWrap component="div">
+          <Typography variant="h6" fontWeight={600}  noWrap component="div">
             Manage Invoices
           </Typography>
           <Box sx={{ flexGrow: 1 }} />

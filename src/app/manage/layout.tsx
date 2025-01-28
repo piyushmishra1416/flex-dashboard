@@ -15,9 +15,10 @@ export interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { text: "All Orders", icon: <ViewListIcon />, link: "/manage/setting" },
-  { text: "Current Orders", icon: <LocalMallIcon />, link: "/manage/invoices" },
-  { text: "Inventory", icon: <LoopIcon />, link: "/manage/vendors" },
+  { text: "Dashboard", icon: <ViewListIcon />, link: "/manage" },
+  { text: "Invoices", icon: <LocalMallIcon />, link: "/manage/invoices" },
+  { text: "Vendors", icon: <LoopIcon />, link: "/manage/vendors" },
+  { text: "Setting", icon: <ViewListIcon />, link: "/manage/setting" },
 ];
 
 const CareProviderLayout = ({ children }: { children: ReactNode }) => {
@@ -32,7 +33,7 @@ const CareProviderLayout = ({ children }: { children: ReactNode }) => {
       menuItems={menuItems}
       content={children}
       onMenuItemClick={handleMenuItemClick}
-      padding={0}
+      padding={3}
     />
   );
 };
