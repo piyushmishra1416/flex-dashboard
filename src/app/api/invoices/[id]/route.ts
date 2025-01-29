@@ -21,7 +21,7 @@ export async function GET(
     return NextResponse.json({ success: true, data: invoice });
   } catch (error) {
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch invoice' },
+      { success: false, error: error instanceof Error ? error.message : 'Failed to fetch invoice' },
       { status: 500 }
     );
   }
@@ -51,7 +51,7 @@ export async function PUT(
     return NextResponse.json({ success: true, data: invoice });
   } catch (error) {
     return NextResponse.json(
-      { success: false, error: 'Failed to update invoice' },
+      { success: false, error: error instanceof Error ? error.message : 'Failed to update invoice' },
       { status: 500 }
     );
   }
@@ -75,7 +75,7 @@ export async function DELETE(
     return NextResponse.json({ success: true, data: invoice });
   } catch (error) {
     return NextResponse.json(
-      { success: false, error: 'Failed to delete invoice' },
+      { success: false, error: error instanceof Error ? error.message : 'Failed to delete invoice' },
       { status: 500 }
     );
   }

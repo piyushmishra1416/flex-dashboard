@@ -63,8 +63,20 @@ const getCityFromPostalCode = async (postalCode: string) => {
     );
     return response.data.places?.[0]?.["place name"] || "Unknown City";
   } catch (error) {
+    console.error("Error fetching city from postal code:", error);
     return "Unknown City";
   }
+};
+
+
+const PostalCodeCell: React.FC<{ value: string }> = ({ value }) => {
+  const [city, setCity] = useState("Loading...");
+
+  useEffect(() => {
+    getCityFromPostalCode(value).then(setCity);
+  }, [value]);
+
+  return <span>{city}</span>;
 };
 
 export default function InvoicesTable({
@@ -236,15 +248,7 @@ export default function InvoicesTable({
       renderHeader: (params) => (
         <Box sx={{ fontWeight: 'bold' , fontSize: '0.9rem'}}>{params.colDef.headerName}</Box>
       ),
-      renderCell: (params: any) => {
-        const [city, setCity] = useState("Loading...");
-
-        useEffect(() => {
-          getCityFromPostalCode(params.value).then(setCity);
-        }, [params.value]);
-
-        return <span>{city}</span>;
-      },
+      renderCell: (params) => <PostalCodeCell value={params.value} />
     },
     {
       field: "actions",
@@ -260,11 +264,13 @@ export default function InvoicesTable({
         if (isInEditMode) {
           return [
             <GridActionsCellItem
+              key="save"
               icon={<SaveIcon />}
               label="Save"
               onClick={handleSaveClick(id)}
             />,
             <GridActionsCellItem
+              key="cancel"
               icon={<CancelIcon />}
               label="Cancel"
               onClick={handleCancelClick(id)}
@@ -274,11 +280,13 @@ export default function InvoicesTable({
 
         return [
           <GridActionsCellItem
+            key="edit"
             icon={<EditIcon />}
             label="Edit"
             onClick={handleEditClick(id)}
           />,
           <GridActionsCellItem
+            key="delete"
             icon={<DeleteIcon />}
             label="Delete"
             onClick={handleDeleteClick(id)}

@@ -42,7 +42,7 @@ const InvoicesPage = () => {
 
   useEffect(() => {
     fetchInvoices();
-  }, [filters, page]);
+  }, [filters]);
 
   const handleFilterChange = (filterName: string, value: string) => {
     setFilters((prev) => ({ ...prev, [filterName]: value }));

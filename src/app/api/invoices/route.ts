@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/app/lib/mongoDb';
 import Invoice from '@/app/models/Invoice';
-import { IInvoice, IInvoiceResponse } from '@/types/invoice';
+import { IInvoiceResponse } from '@/types/invoice';
 
 export async function GET(
   request: NextRequest
@@ -17,19 +17,37 @@ export async function GET(
     const limit = parseInt(searchParams.get('limit') || '10');
     const skip = (page - 1) * limit;
 
-    // Build query
-    const query: any = {};
+    interface IInvoiceQuery {
+      vendorName?: { $regex: string; $options: string };
+      invoiceNumber?: { $regex: string; $options: string };
+    }
+    
+    const query: Record<string, any> = {};
     
     if (status) {
       query.status = status;
     }
     
     if (search) {
-      query.$or = [
-        { vendorName: { $regex: search, $options: 'i' } },
-        { invoiceNumber: { $regex: search, $options: 'i' } }
-      ];
+      const orConditions: IInvoiceQuery[] = [];
+    
+      if (searchParams.get('search')) {
+        orConditions.push({
+          vendorName: { $regex: search, $options: 'i' }
+        });
+      }
+    
+      if (searchParams.get('search')) {
+        orConditions.push({
+          invoiceNumber: { $regex: search, $options: 'i' }
+        });
+      }
+    
+      if (orConditions.length > 0) {
+        query.$or = orConditions;
+      }
     }
+    
 
     // Execute query with pagination
     const [invoices, total] = await Promise.all([
@@ -48,9 +66,8 @@ export async function GET(
       limit
     });
   } catch (error) {
-    console.error('Failed to fetch invoices:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch invoices' },
+      { success: false, error: error instanceof Error ? error.message : 'Failed to fetch invoices' },
       { status: 500 }
     );
   }
@@ -71,7 +88,7 @@ export async function POST(
     );
   } catch (error) {
     return NextResponse.json(
-      { success: false, error: 'Failed to create invoice' },
+      { success: false, error: error instanceof Error ? error.message : 'Failed to create invoice' },
       { status: 500 }
     );
   }
