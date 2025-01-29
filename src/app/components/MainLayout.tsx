@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import * as React from "react";
-import { JSX } from "react";
+import { JSX, useState } from "react";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -19,18 +19,14 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Badge from "@mui/material/Badge";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
 import { Typography } from "@mui/material";
-import Image from 'next/image';
-
+import Image from "next/image";
 
 export interface MenuItem {
-   text: string;
-   icon: JSX.Element;
-   link: string;
- }
-
+  text: string;
+  icon: JSX.Element;
+  link: string;
+}
 
 const drawerWidth = 240;
 
@@ -82,6 +78,7 @@ const AppBar = styled(MuiAppBar, {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
+  boxShadow: "none", // Remove shadow
   variants: [
     {
       props: ({ open }) => open,
@@ -122,17 +119,23 @@ const Drawer = styled(MuiDrawer, {
   ],
 }));
 
-const MiniDrawer: React.FC<MiniDrawerProps> = ({ menuItems, content, padding, onMenuItemClick }) => {
+const MiniDrawer: React.FC<MiniDrawerProps> = ({
+  menuItems,
+  content,
+  padding,
+  onMenuItemClick,
+}) => {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [activeLink, setActiveLink] = useState<string>("");
 
   const handleDrawerOpen = () => {
-   setOpen(true);
- };
+    setOpen(true);
+  };
 
- const handleDrawerClose = () => {
-   setOpen(false);
- };
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -163,7 +166,7 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ menuItems, content, padding, on
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" fontWeight={600}  noWrap component="div">
+          <Typography variant="h6" fontWeight={600} noWrap component="div">
             Manage Invoices
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
@@ -185,16 +188,24 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ menuItems, content, padding, on
             >
               <Image src="/man_icon.png" alt="user" width={28} height={28} />
             </IconButton>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'left', margin: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "left",
+                margin: 2,
+              }}
+            >
               <Typography variant="body1" fontWeight={600} noWrap>
-              Rohit Sharma
+                Rohit Sharma
               </Typography>
               <Typography variant="body2" fontSize="small" noWrap>
-              rohithsharma@gmail.com
+                rohithsharma@gmail.com
               </Typography>
             </Box>
           </Box>
         </Toolbar>
+        <Divider />
       </AppBar>
       <Drawer
         variant="permanent"
@@ -203,12 +214,17 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ menuItems, content, padding, on
           backgroundColor: "#ffffff",
           "& .MuiDrawer-paper": {
             backgroundColor: "#ffffff",
-            
           },
         }}
       >
         <DrawerHeader>
-          <Image src="/finify_logo.png" alt="Karunai Logo" className="ml-2" width={84} height={84} />
+          <Image
+            src="/finify_logo.png"
+            alt="Karunai Logo"
+            className="ml-2"
+            width={84}
+            height={84}
+          />
           <Box sx={{ flexGrow: 1 }} />
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
@@ -218,16 +234,28 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ menuItems, content, padding, on
             )}
           </IconButton>
         </DrawerHeader>
-        <Divider />
         <List>
           {menuItems.map(({ text, icon, link }) => (
-            <ListItem key={text} onClick={() => onMenuItemClick(link)} disablePadding sx={{ display: "block" }}>
+            <ListItem
+              key={text}
+              onClick={() => {
+                setActiveLink(link);
+                onMenuItemClick(link);
+              }}
+              disablePadding
+              sx={{ display: "block" }}
+            >
               <ListItemButton
                 sx={[
                   {
-                    color: "black",
+              color: "black",
                     minHeight: 48,
                     px: 2.5,
+                  },
+                  activeLink === link && {
+                    backgroundColor: "#2874a6", // Dark blue background for active item
+                    color: "black",
+                    borderRadius: "28px 0  0 28px",
                   },
                   open
                     ? {
@@ -241,8 +269,12 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ menuItems, content, padding, on
                 <ListItemIcon
                   sx={[
                     {
+                      color: "#2874a6",
                       minWidth: 0,
                       justifyContent: "center",
+                    },
+                    activeLink === link && {
+                      color: "white",
                     },
                     open
                       ? {
@@ -259,9 +291,13 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ menuItems, content, padding, on
                   primary={text}
                   sx={[
                     {
-                      color: "black",
+                      color: "#2874a6",
                       fontFamily: "Poppins, sans-serif",
                       fontSize: "1.5rem",
+                      zIndex: 1,
+                    },
+                    activeLink === link && {
+                      color: "white",
                     },
                     open
                       ? {
@@ -276,14 +312,20 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ menuItems, content, padding, on
             </ListItem>
           ))}
         </List>
-
-       
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: padding }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: padding,
+          width: `calc(100vw - ${drawerWidth}px)`,
+        }}
+      >
+        <Divider />
         <DrawerHeader />
         {content}
       </Box>
     </Box>
   );
-}
+};
 export default MiniDrawer;
