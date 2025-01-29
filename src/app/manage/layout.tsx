@@ -1,12 +1,12 @@
-// app/care-provider/layout.tsx
 "use client";
 import { JSX, ReactNode } from 'react';
 
 import MiniDrawer from '@/app/components/MainLayout';
 import { useRouter } from 'next/navigation';
-import LoopIcon from "@mui/icons-material/Loop";
-import LocalMallIcon from "@mui/icons-material/LocalMall";
-import ViewListIcon from "@mui/icons-material/ViewList";
+import PeopleIcon from '@mui/icons-material/People';
+import ExploreIcon from '@mui/icons-material/Explore';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 export interface MenuItem {
   text: string;
@@ -15,15 +15,14 @@ export interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { text: "Dashboard", icon: <ViewListIcon />, link: "/manage" },
-  { text: "Invoices", icon: <LocalMallIcon />, link: "/manage/invoices" },
-  { text: "Vendors", icon: <LoopIcon />, link: "/manage/vendors" },
-  { text: "Setting", icon: <ViewListIcon />, link: "/manage/setting" },
+  { text: "Dashboard", icon: <ExploreIcon />, link: "/manage" },
+  { text: "Invoices", icon: <ReceiptIcon />, link: "/manage/invoices" },
+  { text: "Vendors", icon: <PeopleIcon />, link: "/manage/vendors" },
+  { text: "Setting", icon: <SettingsIcon />, link: "/manage/setting" },
 ];
 
 const CareProviderLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-
   const handleMenuItemClick = (link: string) => {
     router.push(link);
   };
@@ -33,7 +32,7 @@ const CareProviderLayout = ({ children }: { children: ReactNode }) => {
       menuItems={menuItems}
       content={children}
       onMenuItemClick={handleMenuItemClick}
-      padding={3}
+      padding={0}
     />
   );
 };
