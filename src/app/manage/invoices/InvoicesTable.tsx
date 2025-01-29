@@ -16,8 +16,9 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
+import React from "react";
 
 interface InvoicesTableProps {
   data: IInvoice[];
@@ -55,29 +56,6 @@ const apiUrl = "/api/invoices";
 const updateInvoice = async (id: string, data: any) =>
   axios.put(`${apiUrl}/${id}`, data);
 const deleteInvoice = async (id: string) => axios.delete(`${apiUrl}/${id}`);
-
-const getCityFromPostalCode = async (postalCode: string) => {
-  try {
-    const response = await axios.get(
-      `https://api.zippopotam.us/us/${postalCode}`
-    );
-    return response.data.places?.[0]?.["place name"] || "Unknown City";
-  } catch (error) {
-    console.error("Error fetching city from postal code:", error);
-    return "Unknown City";
-  }
-};
-
-
-const PostalCodeCell: React.FC<{ value: string }> = ({ value }) => {
-  const [city, setCity] = useState("Loading...");
-
-  useEffect(() => {
-    getCityFromPostalCode(value).then(setCity);
-  }, [value]);
-
-  return <span>{city}</span>;
-};
 
 export default function InvoicesTable({
   data,
@@ -246,9 +224,9 @@ export default function InvoicesTable({
       editable: true,
       width: 200,
       renderHeader: (params) => (
-        <Box sx={{ fontWeight: 'bold' , fontSize: '0.9rem'}}>{params.colDef.headerName}</Box>
+        <Box sx={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{params.colDef.headerName}</Box>
       ),
-      renderCell: (params) => <PostalCodeCell value={params.value} />
+      renderCell: (params) => `PO NUMBER: ${params.value}`
     },
     {
       field: "actions",

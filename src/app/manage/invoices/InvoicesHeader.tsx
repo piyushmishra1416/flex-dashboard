@@ -79,17 +79,17 @@ const InvoicesHeader = ({
         ))}
       </StyledTabs>
       <Box
-        sx={{ display: "flex", gap: 2, alignItems: "center", width: "100%" }}
+        sx={{ display: { xs: "block", md: "flex" }, gap: 2,  alignItems: "center", width: "100%", mt: { xs: 2, md: 0 } }}
       >
         <TextField
           size="small"
           placeholder="Search by vendor..."
           value={filters.search}
           onChange={(e) => onFilterChange("search", e.target.value)}
-          sx={{ minWidth: 200 }}
+          sx={{ width: { xs: "100%", md: "auto" }, minWidth: 200, mb: { xs: 2, md: 0 } }}
         />
 
-        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ display: { xs: "none", md: "block" }, flexGrow: 1 }} />
 
         <Button
           variant="contained"
@@ -100,6 +100,8 @@ const InvoicesHeader = ({
             "&:hover": {
               bgcolor: "#1565c0",
             },
+            width: { xs: "100%", md: "auto" },
+            mb: { xs: 2, md: 0 }
           }}
         >
           Create Invoice
@@ -118,7 +120,7 @@ const InvoicesHeader = ({
           SelectProps={{
             native: true,
           }}
-          sx={{ minWidth: 150 }}
+          sx={{ width: { xs: "100%", md: "auto" }, minWidth: 150 }}
         >
           <option value="" disabled>
             Actions
