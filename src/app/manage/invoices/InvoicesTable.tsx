@@ -31,21 +31,41 @@ interface InvoicesTableProps {
 const getStatusColor = (status: string) => {
   switch (status) {
     case "Approved":
-      return "#4caf50";
+      return "success";
     case "Awaiting Approval":
-      return "#ff9800";
+      return "info";
     case "Rejected":
-      return "#f44336";
+      return "error";
     case "Processing":
-      return "#2196f3";
+      return "secondary";
+    case "Paid":
+        return "success";
+    case "Vendor Not Found":
+      return "warning";
+    case "Duplicate":
+      return "warning";
+    case "Void":  
+      return "error";
     default:
-      return "#757575";
+      return "primary";
   }
 };
 
-const apiUrl = "/api/invoices"; // Adjust this URL to your API route
-const updateInvoice = async (id: string, data: any) => axios.put(`${apiUrl}/${id}`, data);
+const apiUrl = "/api/invoices";
+const updateInvoice = async (id: string, data: any) =>
+  axios.put(`${apiUrl}/${id}`, data);
 const deleteInvoice = async (id: string) => axios.delete(`${apiUrl}/${id}`);
+
+const getCityFromPostalCode = async (postalCode: string) => {
+  try {
+    const response = await axios.get(
+      `https://api.zippopotam.us/us/${postalCode}`
+    );
+    return response.data.places?.[0]?.["place name"] || "Unknown City";
+  } catch (error) {
+    return "Unknown City";
+  }
+};
 
 export default function InvoicesTable({
   data,
@@ -57,14 +77,15 @@ export default function InvoicesTable({
 }: InvoicesTableProps) {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
-  // ✅ Handles when the user stops editing a row
-  const handleRowEditStop: GridEventListener<"rowEditStop"> = (params, event) => {
+  const handleRowEditStop: GridEventListener<"rowEditStop"> = (
+    params,
+    event
+  ) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true; // Prevents losing focus if not saved
     }
   };
 
-  // ✅ Handles updating a row when saving
   const processRowUpdate = async (newRow: IInvoice) => {
     try {
       await updateInvoice(newRow._id.toString(), newRow);
@@ -76,7 +97,6 @@ export default function InvoicesTable({
     }
   };
 
-  //  When clicking "Edit"
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel((prevModel) => ({
       ...prevModel,
@@ -84,7 +104,6 @@ export default function InvoicesTable({
     }));
   };
 
-  // ✅ When clicking "Save"
   const handleSaveClick = (id: GridRowId) => () => {
     setRowModesModel((prevModel) => ({
       ...prevModel,
@@ -92,7 +111,6 @@ export default function InvoicesTable({
     }));
   };
 
-  // ✅ When clicking "Cancel"
   const handleCancelClick = (id: GridRowId) => () => {
     setRowModesModel((prevModel) => ({
       ...prevModel,
@@ -100,7 +118,6 @@ export default function InvoicesTable({
     }));
   };
 
-  // ✅ When clicking "Delete"
   const handleDeleteClick = (id: GridRowId) => async () => {
     try {
       await deleteInvoice(id.toString());
@@ -111,28 +128,84 @@ export default function InvoicesTable({
   };
 
   const columns: GridColDef[] = [
-    { field: "vendorName", headerName: "Vendor Name", editable: true, width: 200 },
-    { field: "invoiceNumber", headerName: "Invoice", width: 200 },
+    {
+      field: "vendorName",
+      headerName: "Vendor Name",
+      width: 200,
+      renderHeader: (params) => (
+        <Box sx={{ fontWeight: 'bold' , fontSize: '0.9rem'}}>{params.colDef.headerName}</Box>
+      ),
+      renderCell: (params: GridRenderCellParams) => (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            whiteSpace: "normal",
+            wordBreak: "break-word",
+            lineHeight: "1.5",
+            height: "100%",
+          }}
+        >
+          {params.value}
+        </Box>
+      ),
+    },
+    {
+      field: "invoiceNumber",
+      headerName: "Invoice",
+      width: 200,
+      renderHeader: (params) => (
+        <Box sx={{ fontWeight: 'bold' , fontSize: '0.9rem'}}>{params.colDef.headerName}</Box>
+      ),
+      renderCell: (params: GridRenderCellParams) => (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            whiteSpace: "normal",
+            wordBreak: "break-word",
+            lineHeight: "1.5",
+            height: "100%",
+          }}
+        >
+          No: {params.value}
+        </Box>
+      ),
+    },
     {
       field: "status",
       headerName: "Status",
       width: 200,
+      renderHeader: (params) => (
+        <Box sx={{ fontWeight: 'bold' , fontSize: '0.9rem'}}>{params.colDef.headerName}</Box>
+      ),
       renderCell: (params: GridRenderCellParams) => (
         <Chip
           label={params.value}
-          sx={{
-            bgcolor: getStatusColor(params.value),
-            color: "white",
+          variant="outlined"
+          color={getStatusColor(params.value)}
+          sx={{ 
             width: "200px",
           }}
         />
       ),
     },
-    { field: "netAmount", headerName: "Net Amount", editable: true, width: 200 },
+    {
+      field: "netAmount",
+      headerName: "Net Amount",
+      editable: true,
+      renderHeader: (params) => (
+        <Box sx={{ fontWeight: 'bold' , fontSize: '0.9rem'}}>{params.colDef.headerName}</Box>
+      ),
+      width: 200,
+    },
     {
       field: "invoiceDate",
       headerName: "Invoice Date",
       width: 200,
+      renderHeader: (params) => (
+        <Box sx={{ fontWeight: 'bold' , fontSize: '0.9rem'}}>{params.colDef.headerName}</Box>
+      ),
       valueGetter: (params) => dayjs(params).format("YYYY-MM-DD"),
     },
     {
@@ -140,28 +213,76 @@ export default function InvoicesTable({
       headerName: "Due Date",
       editable: true,
       width: 200,
+      renderHeader: (params) => (
+        <Box sx={{ fontWeight: 'bold' , fontSize: '0.9rem'}}>{params.colDef.headerName}</Box>
+      ),
       valueGetter: (params) => dayjs(params).format("YYYY-MM-DD"),
     },
-    { field: "department", headerName: "Department", editable: true, width: 200 },
-    { field: "poNumber", headerName: "Cost Center", editable: true, width: 200 },
+    {
+      field: "department",
+      headerName: "Department",
+      headerClassName: 'bold-header',
+      editable: true,
+      renderHeader: (params) => (
+        <Box sx={{ fontWeight: 'bold' , fontSize: '0.9rem'}}>{params.colDef.headerName}</Box>
+      ),
+      width: 200,
+    },
+    {
+      field: "poNumber",
+      headerName: "Cost Center",
+      editable: true,
+      width: 200,
+      renderHeader: (params) => (
+        <Box sx={{ fontWeight: 'bold' , fontSize: '0.9rem'}}>{params.colDef.headerName}</Box>
+      ),
+      renderCell: (params: any) => {
+        const [city, setCity] = useState("Loading...");
+
+        useEffect(() => {
+          getCityFromPostalCode(params.value).then(setCity);
+        }, [params.value]);
+
+        return <span>{city}</span>;
+      },
+    },
     {
       field: "actions",
       type: "actions",
       headerName: "Actions",
       width: 150,
+      renderHeader: (params) => (
+        <Box sx={{ fontWeight: 'bold' , fontSize: '0.9rem'}}>{params.colDef.headerName}</Box>
+      ),
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
         if (isInEditMode) {
           return [
-            <GridActionsCellItem icon={<SaveIcon />} label="Save" onClick={handleSaveClick(id)} />,
-            <GridActionsCellItem icon={<CancelIcon />} label="Cancel" onClick={handleCancelClick(id)} />,
+            <GridActionsCellItem
+              icon={<SaveIcon />}
+              label="Save"
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label="Cancel"
+              onClick={handleCancelClick(id)}
+            />,
           ];
         }
 
         return [
-          <GridActionsCellItem icon={<EditIcon />} label="Edit" onClick={handleEditClick(id)} />,
-          <GridActionsCellItem icon={<DeleteIcon />} label="Delete" onClick={handleDeleteClick(id)} />,
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            onClick={handleEditClick(id)}
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleDeleteClick(id)}
+          />,
         ];
       },
     },
