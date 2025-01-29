@@ -27,6 +27,7 @@ const InvoicesHeader = ({
   onFilterChange,
   onCreateInvoice,
 }: InvoicesHeaderProps) => {
+  
   const handleTabChange = (event: SyntheticEvent, newValue: string) => {
     onFilterChange("status", newValue);
   };
@@ -40,7 +41,6 @@ const InvoicesHeader = ({
     },
   });
   
-  // Styled Tab with hover and selected states
   const StyledTab = styled(Tab)(({ theme }) => ({
     textTransform: "none",
     fontWeight: theme.typography.fontWeightRegular,

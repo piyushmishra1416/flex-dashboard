@@ -23,7 +23,6 @@ const menuItems: MenuItem[] = [
 
 const CareProviderLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-
   const handleMenuItemClick = (link: string) => {
     router.push(link);
   };
@@ -33,7 +32,7 @@ const CareProviderLayout = ({ children }: { children: ReactNode }) => {
       menuItems={menuItems}
       content={children}
       onMenuItemClick={handleMenuItemClick}
-      padding={3}
+      padding={0}
     />
   );
 };
