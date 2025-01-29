@@ -1,10 +1,8 @@
-// app/care-provider/layout.tsx
 "use client";
 import { JSX, ReactNode } from 'react';
 
 import MiniDrawer from '@/app/components/MainLayout';
 import { useRouter } from 'next/navigation';
-import LoopIcon from "@mui/icons-material/Loop";
 import PeopleIcon from '@mui/icons-material/People';
 import ExploreIcon from '@mui/icons-material/Explore';
 import ReceiptIcon from '@mui/icons-material/Receipt';
