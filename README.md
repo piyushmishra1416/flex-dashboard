@@ -6,31 +6,14 @@ A modern invoice management dashboard built with Next.js 14, TypeScript, and Mon
 
 ## Implemented Features
 
-- 📊 Interactive Dashboard
-  - Overview cards with key metrics
-  - Total invoices count
-  - Active vendors tracking
-  - Monthly spend analysis
-  - Growth rate indicators
 
-- 📑 Invoice Management
-  - View all invoices in a data grid
-  - Filter invoices by status (Open, Awaiting Approval, Approved, etc.)
-  - Search invoices by vendor name
-  - Edit invoice details inline
-  - Delete invoices
-  - Responsive table design
-
-- 👥 Basic Vendor Management
-  - View vendor list
-  - Track vendor status
-  - View vendor categories
-  - Monitor vendor spend
-
-- ⚙️ Settings Interface
-  - Notification preferences
-  - Company information form
-  - Email settings
+-  Invoice Management
+   - View all invoices in a data grid
+   - Filter invoices by status (Open, Awaiting Approval, Approved, etc.)
+   - Search invoices by vendor name
+   - Edit invoice details inline
+   - Delete invoices
+   - Responsive table design
 
 ## Tech Stack
 
@@ -43,7 +26,7 @@ A modern invoice management dashboard built with Next.js 14, TypeScript, and Mon
 - **Backend:**
   - MongoDB
   - Next.js API Routes
-  - Mongoose ODM
+  - Mongoose 
 
 ## Getting Started
 
@@ -107,29 +90,6 @@ finify/
 - `PUT /api/invoices/[id]` - Update invoice
 - `DELETE /api/invoices/[id]` - Delete invoice
 
-## Current Functionality
-
-### Landing Page
-- Modern, responsive design
-- Quick access to dashboard
-- Integration showcase section
-
-### Dashboard
-- Key metrics display
-- Responsive layout
-- Navigation sidebar
-
-### Invoice Management
-- Status-based filtering
-- Vendor search
-- Inline editing
-- Pagination
-- Responsive data grid
-
-### Settings
-- Toggle switches for notifications
-- Company information form
-- Basic preferences
 
 ## Deployment
 
@@ -140,6 +100,3 @@ The project is ready to deploy on Vercel:
 3. Add your MongoDB URI to environment variables
 4. Deploy
 
-## License
-
-This project is licensed under the MIT License.
