@@ -126,8 +126,8 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({
   onMenuItemClick,
 }) => {
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState<string>("");
+  const [open, setOpen] = useState(true);
+  const [activeLink, setActiveLink] = useState<string>("/manage/invoices");
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -217,7 +217,7 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({
           },
         }}
       >
-        <DrawerHeader>
+        <DrawerHeader sx={{ marginLeft: "10px"}}>
           <Image
             src="/finify_logo.png"
             alt="Karunai Logo"
@@ -253,9 +253,10 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({
                     px: 2.5,
                   },
                   activeLink === link && {
-                    backgroundColor: "#2874a6", // Dark blue background for active item
+                    backgroundColor: "#2874a6", 
                     color: "black",
                     borderRadius: "28px 0  0 28px",
+                    marginLeft: "2px"
                   },
                   open
                     ? {

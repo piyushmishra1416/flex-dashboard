@@ -17,7 +17,6 @@ const InvoicesPage = () => {
 
   const fetchInvoices = async () => {
     try {
-      console.log("invoices", invoices);
       setLoading(true);
       const searchParams = new URLSearchParams({
         page: page.toString(),
